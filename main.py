@@ -5,6 +5,8 @@
 
 # main.py: Main server and response handler
 
+from __future__ import with_statement
+
 import base64
 import hashlib
 import logging
@@ -18,6 +20,9 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 
 from errors import *
 import mirror
+
+import hack_hooks
+import os
 
 class ProxyHandler(webapp.RequestHandler):
 	'''The parchment-proxy server itself'''
@@ -122,19 +127,21 @@ class LegacyHandler(webapp.RequestHandler):
 	def print_home(self):
 		# Print a home page
 		self.response.headers["Content-Type"] = "text/html"
-		self.response.out.write('''
-<!doctype html>
-<title>Parchment-proxy</title>
-<h1>Parchment-proxy</h1>
-<p>This is the proxy for Parchment the web IF interpreter.
-<p>If you want to read a story with Parchment go to <a href="http://parchment.toolness.com/">http://parchment.toolness.com/</a>
-<p>If you want to know more about Parchment-proxy go to <a href="http://github.com/curiousdannii/parchment-proxy">http://github.com/curiousdannii/parchment-proxy</a>
-		''')
+		with open('root/index.html', 'r') as f:
+			self.response.out.write(f.read())
+
+class NotFoundPageHandler(webapp.RequestHandler):
+    def get(self):
+        self.error(404)
+        with open('root/index.html', 'r') as f:
+        	self.response.out.write('<body>404, page not found, <a href="/">Sitemap</a></body>')
 
 def main():
 	application = webapp.WSGIApplication([
 		('/proxy/?', ProxyHandler),
 		('/', LegacyHandler),
+		('/index_history', hack_hooks.IndexHistoryHandler),
+		('/.*', NotFoundPageHandler),
 	], debug=True)
 	run_wsgi_app(application)
 

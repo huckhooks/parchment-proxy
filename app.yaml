@@ -1,8 +1,19 @@
-application: zcode
-version: 2
+application: daqgit
+version: 4-0-proxy-scratchpad
+
 runtime: python
 api_version: 1
 
 handlers:
+
+- url: /quixe-work
+  static_dir: quixe-work
+  
+- url: /Browsies
+  static_dir: quixe-work/spaceless_named/Hack_Hooks_Demo/Browsies
+
 - url: .*
   script: main.py
+  
+
+
