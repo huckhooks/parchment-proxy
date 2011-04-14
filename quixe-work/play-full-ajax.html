@@ -59,9 +59,14 @@ game_options = {
 HackHooks.BROWSIE_BASE = "spaceless_named/Hack_Hooks_Demo/Browsies/";
 HackHooks.AJAX = true; //history on server, shorter bookmarks, but more tracking
 
-HackHooks.AJAX_DEBUG = false; //switching off switches fakes off too
+HackHooks.AJAX_DEBUG = false; //switching off switches fakes off too.
+
 HackHooks.FAKE_HISTORY = false;
-HackHooks.FAKE_INPUT = true;
+HackHooks.FAKE_HISTORY = {log: ["#fake history"]};
+
+HackHooks.FAKE_INPUT = false;
+HackHooks.FAKE_INPUT = "#fake input";
+HackHooks.FAKE_INPUT = "x foo";
 
 </script>
 
