@@ -52,8 +52,10 @@
 .BufferWindow {
   overflow: scroll;   /* vertical scrollbar is mandatory */
   overflow-x: hidden; /* but horizontal scrollbar is forbidden */
-  font-family: Palatino, Georgia, serif;
-  font-size: 12px;
+  //X-XX
+  //font-family: Palatino, Georgia, serif;
+  //font-size: 12px;
+  
   padding: 6px 10px 6px 10px;
 }
 
@@ -106,8 +108,9 @@
 }
 
 .BufferWindow .Input {
-  font-family: Palatino, Georgia, serif;
-  font-size: 12px;
+  //X-XX
+  //font-family: Palatino, Georgia, serif;
+  //font-size: 12px;
 }
 
 .GridWindow .Input {

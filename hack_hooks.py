@@ -27,7 +27,8 @@ class IndexHistoryHandler(webapp.RequestHandler):
         else:
             log = history["log"]
             
-        log_md5 = hashlib.md5("\n".join(log)).hexdigest()
+        #TODO fix unicode
+        log_md5 = hashlib.md5("\n".join(log).encode( "utf-8" )).hexdigest()
         db_history = History.get_by_key_name(log_md5)
         if not db_history :
             db_history = History(key_name=log_md5)
@@ -45,5 +46,8 @@ class IndexHistoryHandler(webapp.RequestHandler):
             response["log_len"] = len(log)
         
         self.response.headers["Content-Type"] = "text/javascript"
-        self.response.out.write("%s(%s);" % (jsonp, simplejson.dumps(response)))
+        res = ("%s(%s);" % (jsonp, simplejson.dumps(response)))
+        #enable to test client errorhandling
+        #x = 1 / 0 
+        self.response.out.write( res )
 

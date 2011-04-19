@@ -9,17 +9,13 @@ if(!window.console) {
     }//nop
   };
 }
-HackHooksFrame = {
-  subframe_started: function(subframe) {
-    //TODO
-    this.subframe = subframe;
 
-  }
-};
 HackHooks = {
   //config
   AJAX: false,
   BROWSIE_BASE: "../Browsies/",
+  PARTNER_FRAME_ORIGIN: "*",
+  
   AJAX_DEBUG: false,
   FAKE_HISTORY: false,
   FAKE_INPUT: false,
@@ -44,6 +40,12 @@ HackHooks = {
 
   last_req_id: 0,
 
+  post_parent: function( message ) {
+    if (parent != window) {
+      //parent.postMessage(JSON.stringify(message), this.PARTNER_FRAME_ORIGIN);
+      parent.HackHooksFrame.receiveMessage( message, document.location );
+    }
+  },
   print: function(line) {
     line = "[" + line + "]";
     console.log("print> " + line);
@@ -61,8 +63,10 @@ HackHooks = {
   error_msg: function(msg) {
     //alert(msg);
     console.log(msg);
+    this.print(msg)
   },
   started: function(image) {
+    this.post_parent(["started",null])
     var DEBUG = this.AJAX_DEBUG && location.hash == "";
     if(DEBUG && this.FAKE_HISTORY) {
       var json; //move choosen last
@@ -149,7 +153,7 @@ HackHooks = {
         },
         evalJS: 'force',
         onFailure: function(resp) {
-          me.error_msg("Noe (" + cmd + "): Error " + resp.status + ": "
+          me.error_msg("Server-problem, history not saved. Error " + resp.status + ": "
           + resp.statusText);
         }
       });
@@ -185,6 +189,7 @@ HackHooks = {
     var win = this.windowdic.get(this.main_winid);
     this.replaying = true;
     for(var i=0; i < this.next_log.length;i++) {
+      //console.log("replaying>" + this.next_log[i]);
       this.send_response("line",win,this.next_log[i],null);
     }
     this.replaying = false;
@@ -207,6 +212,7 @@ HackHooks = {
     var hash = Base64.encode(json);
     location.hash = hash;
     this.hash = location.hash;
+    HackHooks.post_parent(["subframe_sets_hash",this.hash.substring(1)]);
   },
   update_title: function() {
     var line = this.log.length > 0 ?
@@ -217,7 +223,7 @@ HackHooks = {
   },
   //XXX
   insert_special_text: function(el, val) {
-    console.log("insert_text>" + val);
+    //console.log("insert_text>" + val);
     var url;
     if(url = /^(.*?.). Url: (.*)$/.exec(val)) {
       if (! /.*:.*/.exec(url[2]) )

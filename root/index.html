@@ -1,63 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <title>Modified Parchment-proxy, used for testing</title>
-</head>
+  <head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Huck Hooks QUixe Clone Online</title>
+    <style
+    >
+    body {
+      background: #FFFFEE;
+    }
+    </style>
+  </head>
+  <body>
 
-<body>
+    <h1>Huck Hooks Quixe Clone Online</h1>
+    <a href="http://localhost:8080/">Localhost for testing</a>
+    |
+    <a href="http://daqgit.appspot.com">Appengine for more testing</a>
+    |
+    <b>
+    <script>
+    if(/localhost/.exec(document.location))
+      document.write("Localhost");
+    else
+      document.write("On the real web");
+    </script>
+    </b>
+    <hr>
 
-<h1>Modified Parchment-proxy, used for testing</h1>
+    <h2>
+    <a href="quixe-work/play-ajax.html"
+    >Enter the Keyboard explorer :D</a>
+    </h2>
+    <hr>
+    
+    <h2>
+    <a href="quixe-work/edit-i7-firefox.html"
+    >Have a view on foxy broom, the i7-editor :)</a>
+    </h2>
+    <b>NEW NEW NE-ahem.</b>
+    It can really compile, if you install it. ... - ...
+    zip and instructions pending ...
+    <hr>
+    <h2>Related urls</h2>
+    Big credits to
+    <a href="http://eblong.com/zarf/glulx/quixe/">
+    <b>Quixe</b>
+    </a>
+    and
+    <a href="http://zcode.appspot.com/">
+    <b>Parchment-Proxy</b>
+    </a>.
+    Find more in
+    <a href="quixe-work/play-ajax.html"
+    >the Keyboard explorer ^^</a>
+    <hr>
+    <h2>
+    Play games from everywhere !!1!
+    </h2>
+    Enter the URL (an .ulx or .gblorb file):
+    <form method=get action="quixe-work/play-remote-ajax.html">
+      <input type=text name=story size=60 maxlength=255 value="">
+      <input type=submit name=enter value="Play it!">
+    </form>
+    You can play any Glulx games on the web through this interpreter.
+    As long as the same input results in the same output, you can save by bookmarking.
+    If the game uses a "dice", save by bookmark may break.
+    <p>
+      The only one i tested are versions of my "game" used here.
+      <ul>
+        <li>
+          http://huckhooks.github.com/quixe/Release/Hack%20Hooks%20Demo.gblorb
+        </li>
+        <li>
+          http://daqgit.appspot.com/Hack_Hooks_Demo_Materials/Release/Hack_Hooks_Demo.gblorb
+        </li>
+      </ul>
+      <a href="http://www.ifarchive.org/indexes/if-archiveXgamesXglulx.html"
+      target="_blank"
+      >
+      Some from The Interactive Fiction Archive may work too.
+      <a/>
+      <br>
+      <hr>
 
-<a href="http://localhost:8080/">Localhost for testing</a>
-|
-<a href="http://daqgit.appspot.com">Appengine for more testing</a>
-|
-<b><script>
-  if(/localhost/.exec(document.location))
-    document.write("Localhost");
-  else
-    document.write("On the real web");
-</script>
-</b>
-<hr>
-<h2><a href="quixe-work/play-ajax.html"
->Enter the Keyboard explorer :D</h2></a>
-<hr>
-<h2>Testpages.</h2>
-These are for the developer only. They do the same as the keyboard-explorer,
-only in various configurations.
-<pre>
--full- means dont confuse the debugger, but laarge download.
--remote- allows to load storyfiles from other servers, but store histories here.
--ajax- means stores history on server, shorter bookmarks
--frame- consider it buggy. I still try to figure out what i want to do there.^^
-(Keyboard Explorer is -play-ajax-)
-</pre>
-<a href="quixe-work/play-full-ajax-frame.html"
->play-full-ajax-frame</a>
-<p>
-<a href="quixe-work/play-full-ajax.html"
->play-full-ajax</a>
-<p>
-<a href="quixe-work/play-full.html"
->play-full</a>
-<p>
-<a href="quixe-work/play-remote-full-ajax.html"
->play-remote-full-ajax</a>
-<p>
-<a href="quixe-work/play-remote-full-ajax.html?story=http%3A%2F%2Fhuckhooks.github.com%2Fquixe%2FRelease%2FHack%2520Hooks%2520Demo.gblorb"
->play-remote-full-ajax.html?story</a>
-<p>
-<a href="quixe-work/play-remote-full-ajax.html?story=http://admin.home.huckhooks.operaunite.com/file_sharing/content/Hack_Hooks_Demo%20Materials/Release/Hack_Hooks_Demo.gblorb"
->play-remote-full-ajax.html?story=unite</a>
-
-<h2>Related urls</h2>
-
-Find them in <a href="quixe-work/play-ajax.html"
->the Keyboard explorer ^^</a>
-
-
-</body>
+      <h2>Testpages for this developer.</h2>
+      These are for this developer only. They do the same as the keyboard-explorer,
+      but in various configurations.
+      <pre>
+        -full- means dont confuse the debugger, but laarge download.
+        -remote- allows to load storyfiles from other servers, but store histories here.
+        -ajax- means stores history on server, shorter bookmarks
+        (Keyboard Explorer is -play-ajax-)
+      </pre>
+  </body>
 </html>

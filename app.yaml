@@ -1,5 +1,9 @@
 application: daqgit
-version: 4-0-proxy-scratchpad
+#fixing -
+#testing -
+#fixed unicode, basic server-errordisplay inline, 
+#logposting-growth was actually a feature of errorhandling.
+version: 4-3
 
 runtime: python
 api_version: 1
@@ -9,11 +13,15 @@ handlers:
 - url: /quixe-work
   static_dir: quixe-work
   
+- url: /Release
+  static_dir: quixe-work/Hack_Hooks_Demo_Materials/Release
+
 - url: /Browsies
-  static_dir: quixe-work/spaceless_named/Hack_Hooks_Demo/Browsies
+  static_dir: quixe-work/Hack_Hooks_Demo_Materials/Browsies
 
 - url: .*
   script: main.py
+
   
 
 
