@@ -6,7 +6,7 @@ import subprocess
 import sys
 import re
 
-cli_inform7 = os.path.expanduser("~/Inform/cli/bin/i7")
+cli_inform7 = os.path.expanduser("~/Inform/cli-inform/bin/i7")
 dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(dir)
 i7_project = sys.argv[2];

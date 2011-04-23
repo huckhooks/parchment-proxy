@@ -56,7 +56,9 @@ var windows_paging_count = 0;
 var resize_timer = null;
 var retry_timer = null;
 var is_ie7 = false;
-var perform_paging = true;
+//X-XX
+//var perform_paging = true;
+var perform_paging = false;
 
 /* Some handy constants */
 /* A non-breaking space character. */

@@ -13,28 +13,33 @@
     }
     #editdiv {
       height:100%;
-      width:50%;
       float:left;
       overflow:scroll;
     }
-    #editframe {
-      height:100%;
+    .editdiv_mix {
       width:50%;
-      float:left;
+    }
+    .editdiv_edit {
+      width:100%;
     }
     #quixeframe {
       height:100%;
-      width:50%;
       float:none
+    }
+    .quixeframe_mix {
+      width:50%;
+    }
+    .quixeframe_play {
+      width:100%;
     }
     #framediv {
       height:90%
     }
     </style>
 
-    <script src="edit-i7-lib/edit-config-default-full.js" type="text/javascript">
+    <script src="edit-i7-lib/edit-config-full.js" type="text/javascript">
     </script>
-    <script src="edit-i7-lib/edit-config-local.js" type="text/javascript">
+    <script src="edit-config-full.js" type="text/javascript">
     </script>
     <script src="src/prototype-1.7.js" type="text/javascript">
     </script>
@@ -56,17 +61,20 @@
     <button onclick="return Edit.save_and_run()">
       save&run ^s
     </button>
-    <!--
-    <button onclick="return Edit.dump()">
+    
+    <button id="mode" onclick="return Edit.next_mode()">mix>play</button>
+    
+    <button id="dump" onclick="return Edit.dump()">
       dump
     </button>
+    <!--
     -->
     <hr>
     <div id="framediv">
-      <div id="editdiv">
+      <div id="editdiv" class = "editdiv_mix">
         ..Loading..
       </div>
-      <iframe id="quixeframe" src="" frameborder="0">
+      <iframe id="quixeframe" class="quixeframe_mix" src="" frameborder="0">
       </iframe>
     </div>
     <script>

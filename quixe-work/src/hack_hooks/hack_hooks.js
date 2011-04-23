@@ -15,7 +15,7 @@ HackHooks = {
   AJAX: false,
   BROWSIE_BASE: "../Browsies/",
   PARTNER_FRAME_ORIGIN: "*",
-  
+
   AJAX_DEBUG: false,
   FAKE_HISTORY: false,
   FAKE_INPUT: false,
@@ -139,7 +139,7 @@ HackHooks = {
       this.last_req_id ++ ;
       var me = this;
       new Ajax.Request(cmd, {
-        method: 'post',
+        method: 'get',
         parameters: {
           json: JSON.stringify({
             jsonp: jsonp,
@@ -221,28 +221,44 @@ HackHooks = {
     + this.log.length + " - "
     + this.basetitle;
   },
-  //XXX
+  clean_hyper: function(val) {
+    val = val.escapeHTML();
+    var match = 0;
+    var res = "";
+    var rx = /(.*?)(\w\+)?(\w*)\{(.*?)\}(.*?)/g
+    while (url = rx.exec(val)) {
+      match = rx.lastIndex;
+      if(!url[4]) {
+        url[4] = url[3];
+        url[3] = "";
+      }
+      res += url[1] + url[4] + url[5];
+    }
+    if(match)
+      res += val.substr(match);
+    return res;
+  },
   insert_special_text: function(el, val) {
-    //console.log("insert_text>" + val);
+    console.log("insert_text>" + val);
     var url;
     if(url = /^(.*?.). Url: (.*)$/.exec(val)) {
-      if (! /.*:.*/.exec(url[2]) )
+      if (! /^\/|.*:.*/.exec(url[2]) )
         url[2] = this.BROWSIE_BASE + url[2];
       var ael = new Element('a', {
         'href': url[2],
         'target': '_blank',
         'title': 'opens in new window/tab'
-      } ).update(url[1] + ".");
+      } ).update(this.clean_hyper(url[1]) + ".");
       el.appendChild(ael);
       return true;
     } else if (url = /^(.*?.). IFrame: (\w*), (.*)/.exec(val)) { // TODO
-      if (! /.*:.*/.exec(url[3]) )
+      if (! /^\/|.*:.*/.exec(url[3]) )
         url[3] = this.BROWSIE_BASE + url[3];
       var ael = new Element('a', {
         'href': url[3],
         'target': '_blank',
         'title': 'opens in new window/tab'
-      } ).update(url[1] + ".");
+      } ).update(this.clean_hyper(url[1]) + ".");
       el.appendChild(ael);
       if(! this.replaying) {
         var bel = new Element('br', {} );
@@ -261,42 +277,42 @@ HackHooks = {
         'href': url[2],
         'target': '_blank',
         'title': 'opens in new window/tab'
-      } ).update(url[1] + ".");
+      } ).update(this.clean_hyper(url[1]) + ".");
       el.appendChild(ael);
       if(! this.replaying) {
         var bel = new Element('br', {} );
         el.appendChild(bel);
         if ( (! this.replaying)
-        && confirm(url[1] + ". \n\nOpen in new window/tab?\n\n" + url[2])
+        && confirm(this.clean_hyper(url[1]) + ". \n\nOpen in new window/tab?\n\n" + url[2])
         )
           window.open(url[2]);
       }
       return true;
     } else if (url = /^(.*?.). Browse: (.*)/.exec(val)) {
-      if (! /.*:.*/.exec(url[2]) )
+      if (! /^\/|.*:.*/.exec(url[2]) )
         url[2] = this.BROWSIE_BASE + url[2];
       var ael = new Element('a', {
         'href': url[2],
         'target': '_blank',
         'title': 'opens in new window/tab'
-      } ).update(url[1] + ".");
+      } ).update(this.clean_hyper(url[1]) + ".");
       el.appendChild(ael);
       var bel = new Element('br', {} );
       el.appendChild(bel);
       if ( (! this.replaying)
-      && confirm(url[1]
+      && confirm(this.clean_hyper(url[1])
       + ". \n\nRemember to use back-button to go back to game.")
       )
         location.href = url[2];
       return true;
     } else if (url = /^(.*?.). Image: (.*)/.exec(val)) {
-      if (! /.*:.*/.exec(url[2]) )
+      if (! /^\/|.*:.*/.exec(url[2]) )
         url[2] = this.BROWSIE_BASE + url[2];
       var ael = new Element('a', {
         'href': url[2],
         'target': '_blank',
         'title': 'opens in new window/tab'
-      } ).update(url[1] + ".");
+      } ).update(this.clean_hyper(url[1]) + ".");
       el.appendChild(ael);
       if(! this.replaying) {
         var bel = new Element('br', {} );
@@ -308,29 +324,35 @@ HackHooks = {
       }
       return true;
     } else {
-      var match = 0;
-      var rx = /(.*?) (\w*)\{(.*?)\}(.*?)/g
+      var match = -1;
+      var rx = /(.*?)(\w\+)?(\w*)\{(.*?)\}(.*?)/g
       while (url = rx.exec(val)) {
         match = rx.lastIndex;
+        if(!url[4]) {
+          url[4] = url[3];
+          url[3] = "";
+        }
         var me = this;
         el.appendChild(new Element('span').update(url[1] + " "));
         var ael = new Element('a', {
-          'href': 'enter://' + url[2] + " " + url[3],
-          'title': url[2] + " " + url[3]
-        }).update(url[3]);
+          'href': 'enter://' + url[3] + " " + url[4],
+          'title': url[3] + " " + url[4]
+        }).update(url[4].escapeHTML());
         (function (url) {
           ael.observe('click', function(ev) {
             ev.stop();
             var win = me.windowdic.get(me.main_winid);
-            me.send_response("line",win,url[2] + " " + url[3],null);
+            me.send_response("line",win,url[3] + " " + url[4],null);
           });
         })(url);
         el.appendChild(ael);
-        el.appendChild(new Element('span').update(url[4]));
+        el.appendChild(new Element('span').update(url[5].escapeHTML()));
       }
-      if(match)
-        el.appendChild(new Element('span').update(val.substr(match)));
-      return match;
+      if(match != -1)
+        el.appendChild(new Element('span').update(val.substr(match).escapeHTML()));
+      else
+        el.appendChild(new Element('span').update(val.escapeHTML()));      
+      return true;
     }
     return false;
   }

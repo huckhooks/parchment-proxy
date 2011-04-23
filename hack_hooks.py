@@ -10,7 +10,7 @@ class History(db.Model):
     pass
 
 class IndexHistoryHandler(webapp.RequestHandler):
-    def post(self):
+    def get(self):
         
         json = self.request.get('json')
         logging.info("in> %s" % json)
