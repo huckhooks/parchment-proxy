@@ -1,9 +1,6 @@
 application: daqgit
-#fixing -
-#testing -
-#fixed unicode, basic server-errordisplay inline, 
-#logposting-growth was actually a feature of errorhandling.
-version: 4-3
+
+version: 4-6-edit
 
 runtime: python
 api_version: 1

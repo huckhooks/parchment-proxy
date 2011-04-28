@@ -19,11 +19,11 @@ HackHooksFrame = {
   handle_started: function() {
   },
   handle_subframe_sets_hash: function(hash) {
-    //if (last_hash != hash) {
     console.log("handle_subframe_sets_hash>" + hash)
     location.hash = hash;
     last_hash = hash;
-    //}
-
   },
+  handle_edit: function(name) {
+    Edit.find(name);
+  }
 };

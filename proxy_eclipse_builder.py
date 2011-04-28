@@ -5,6 +5,7 @@
 import os
 import shutil
 import sys
+import traceback
 
 #http://stefaanlippens.net/redirect_python_print
 class SilentBuffer:
@@ -33,13 +34,25 @@ class Builder(object):
             shutil.rmtree(self.dst_dir)
         shutil.copytree(self.src_dir, self.dst_dir)
         
-        shutil.rmtree(os.path.join(self.dst_dir, "Hack_Hooks_Demo.inform/Build"))
-
-        shutil.move(
-                    os.path.join(self.dst_dir, "Hack_Hooks_Demo Materials"),
-                    os.path.join(self.dst_dir, "Hack_Hooks_Demo_Materials"))
+        for proj in [
+                     "Hack_Hooks_Demo",
+                     "Hack_Hooks_Demo_De",
+                     "Custom_Quixe_Miniext",
+                     "Custom_Quixe_Miniext_De",
+                     ]:
+            
+            print proj
         
-        shutil.rmtree(os.path.join(self.dst_dir, "Hack_Hooks_Demo_Materials/Templates"))
+            shutil.rmtree(os.path.join(self.dst_dir, proj + ".inform/Build"), True)
+            shutil.rmtree(os.path.join(self.dst_dir, proj + ".inform/Index/Details"), True)
+            for file in ["Actions.html", "Contents.html", "Kinds.html", 
+                         "Headings.xml", "Phrasebook.html", "Rules.html",
+                         "Scenes.html"]:
+                os.remove(os.path.join(self.dst_dir, 
+                                       proj + ".inform/Index", file))
+            shutil.move(os.path.join(self.dst_dir, proj + " Materials"), 
+                        os.path.join(self.dst_dir, proj + "_Materials"))  
+            shutil.rmtree(os.path.join(self.dst_dir, proj + "_Materials/Templates"), True)
 
         shutil.rmtree(os.path.join(self.dst_dir, "local"))
         shutil.rmtree(os.path.join(self.dst_dir, "stories"))
@@ -80,7 +93,6 @@ def make_spaceless():
 
     mydir = os.path.dirname(os.path.abspath(__file__))          
     os.path.walk(mydir, myfun, None)
-    os.path.walk(mydir + "/edit-i7-lib", myfun, None)
 
 if __name__ == '__main__':
     silent = SilentBuffer()
@@ -94,8 +106,8 @@ if __name__ == '__main__':
         make_spaceless()
         #raise Exception('exception handling test')
     except:
-        silent.verbose()    
-        print "Error:", sys.exc_info()
+        silent.verbose()
+        traceback.print_exc()
 
 
     

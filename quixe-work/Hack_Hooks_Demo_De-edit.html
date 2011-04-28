@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>edit</title>
+    <style type="text/css">
+    html, body {
+      height:100%;
+      margin:0;
+      padding:0
+    }
+    body {
+      background: #FFFFEE;
+    }
+    #framediv {
+      height:90%
+    }
+    #editdiv {
+      height:100%;
+      float:left;
+      overflow:scroll;
+    }
+    .editdiv_mix {
+      width:50%;
+    }
+    .editdiv_edit {
+      width:100%;
+    }
+    #quixeframe {
+      height:100%;
+      float:none
+    }
+    .quixeframe_mix {
+      width:50%;
+    }
+    .quixeframe_play {
+      width:100%;
+    }
+    #docuframe {
+      height:100%;
+      width:100%;
+    }
+    </style>
+
+    <script src="edit-i7-lib/edit-config.js" type="text/javascript">
+    </script>
+    <script src="edit-config.js" type="text/javascript">
+    </script>
+    <script>
+    var rx = /.*\/(.*)-edit.html/.exec(document.location);
+    Edit.PROJECT = rx[1];
+    console.log("Project: " + Edit.PROJECT);
+    </script>
+
+    <script src="edit-i7-lib/js/hack_hooks.min.js" type="text/javascript"></script>
+    <script src="edit-i7-lib/js/glkote.min.js" type="text/javascript"></script>
+    <script src="edit-i7-lib/js/edit.min.js" type="text/javascript"></script>
+
+
+    <script type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <button onclick="return Edit.save_and_run()">
+      save&amp;run ^s
+    </button>
+
+    <button id="mode" onclick="return Edit.next_mode()">mix>play</button>
+    
+    <hr>
+    <div id="framediv">
+      <div id="editdiv" class = "editdiv_mix">
+        ..Loading..
+      </div>
+      <iframe id="quixeframe" class="quixeframe_mix" src="" frameborder="0">
+      </iframe>
+      <iframe id="docuframe" src="" frameborder="0" style="display: none;">
+      </iframe>
+    </div>
+    <script>
+    Edit.requestSource();
+    </script>
+  </body>
+</html>

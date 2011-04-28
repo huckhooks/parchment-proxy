@@ -1,6 +1,10 @@
-ide/Hack_Hooks_Demo Materials/Release/
-ide/Hack_Hooks_Demo.inform/Build/
-ide/Hack_Hooks_Demo.inform/Index/
+* Materials/Release/
+*.inform/Build/
+*.inform/Index/
+*.inform/manifest.plist
+*.inform/notes.rtf
+*.inform/Release.blurb
+*.inform/Skein.skein
+*.inform/gameinfo.dbg
+*.inform/Metadata.iFiction
 
-ide/Hack_Hooks_Demo.inform/manifest.plist
-ide/Hack_Hooks_Demo.inform/notes.rtf

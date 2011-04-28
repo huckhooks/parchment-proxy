@@ -1,25 +1,118 @@
+/*
+ * setting the hash is done how?
+ * in hack_hooks_frame.
+ */
 HackHooksFrame.initInParent();
 
-Edit.D = false; //encoDing testen
+Edit.SKIP_GAME = false; //release
+//Edit.SKIP_GAME = true; //debug: no game, loads faster
 
+//TODO: jump to mark
 Edit.dump = function() {
+  console.log("dump");
   return false;
+}
+Edit.find = function(name) {
+  var lineno = 10;
+  var el = $('editdiv').firstChild;
+  var found = false;
+  var rx = new RegExp("The " + name + " (is|are) ","i");
+  while(el) {
+    if (el.nodeName === "#text") {
+      if (rx.exec(el.textContent)) {
+        console.log(el.textContent);
+        found = true;
+        break;
+      }
+    }
+    el = el.nextSibling;
+  }
+  if(found) {
+    el = el.previousSibling;
+    console.log(el);
+    var l = $("linemark");
+    if (l)
+      l.remove();
+
+    //make hash different
+    hash = Base64.decode(location.hash.substring(1));
+    try {
+      hash = JSON.parse(hash);
+    } catch(e) {
+      console.log(e);
+      hash = {};
+    }
+    console.log(hash);
+    if (hash.ct)
+      hash.ct ++;
+    else
+      hash.ct = 1;
+    console.log(hash);
+    HackHooksFrame.last_hash = Base64.encode(JSON.stringify(hash));
+
+    el.insert({
+      "after": '<a name="' + HackHooksFrame.last_hash + '" id="linemark"><hr></a>'
+    });
+    location.hash = HackHooksFrame.last_hash;
+  }
 }
 Edit.next_mode = function() {
   var val = $("mode").textContent;
   console.log( val );
+
   if (val == "mix>play") {
     $('mode').update("play>edit");
     $("editdiv").hide();
     $("quixeframe").className = "quixeframe_play";
+
   } else if (val == "play>edit") {
-    $('mode').update("edit>mix");
+    $('mode').update("edit>map");
     $("quixeframe").hide();
     $("editdiv").className = "editdiv_edit";
     $("editdiv").show();
-  } else if (val == "edit>mix") {
+
+  } else if (val == "edit>map") {
+    $('mode').update("map>mix");
+    $("editdiv").hide();
+    $("quixeframe").hide();
+    var s = Edit.PROJECT + ".inform/Index/World.html" ;
+    console.log(s);
+    $("docuframe").src = s;
+    $("docuframe").onload = function() {
+      //http://www.nczonline.net/blog/2009/09/15/iframes-onload-and-documentdomain/
+      var doc = $("docuframe").contentDocument;
+      //http://www.dyn-web.com/tutorials/iframes/
+      if(Edit.DEBUG_LIBS) {
+        var s = "../../src/";
+        var s2 = "../../edit-i7-lib/";
+        var el = document.createElement("script");
+        el.setAttribute('src', s + 'prototype-1.7.js');
+        doc.body.appendChild(el);
+        var el = document.createElement("script");
+        el.setAttribute('src', s2 + 'patch-index.js');
+        doc.body.appendChild(el);
+      } else {
+        var s = "../../edit-i7-lib/";
+        var el = document.createElement("script");
+        el.setAttribute('src', s + 'js/hack_hooks.min.js');
+        doc.body.appendChild(el);
+        var el = document.createElement("script");
+        el.setAttribute('src', s + 'js/glkote.min.js');
+        doc.body.appendChild(el);
+        var el = document.createElement("script");
+        el.setAttribute('src', s + 'patch-index.js');
+        doc.body.appendChild(el);
+      }
+      //console.log($("docuframe").contentDocument.body.innerHTML);
+      console.log($("docuframe").contentDocument.location);
+
+      $("docuframe").show();
+    };
+  } else if (val == "map>mix") {
     $('mode').update("mix>play");
+    $("docuframe").hide();
     $("editdiv").className = "editdiv_mix";
+    $("editdiv").show();
     $("quixeframe").className = "quixeframe_mix";
     $("quixeframe").show();
   } else
@@ -30,16 +123,16 @@ Edit.requestSource = function() {
 
   document.title = document.title + " " + document.location
   window.onhashchange = function() {
-    Edit.set_player();
+    console.log("edit.onhashchange");
+    if(location.hash.substring(1) !== HackHooksFrame.last_hash)
+      Edit.set_player();
   };
-  if (! this.D)
-    Edit.set_player();
+  Edit.set_player();
 
   this.source_url = Edit.PROJECT_DIR + Edit.PROJECT + '.inform/Source/story.ni'
 
   me = this;
-  new Ajax.Request(this.source_url,
-  {
+  new Ajax.Request(this.source_url, {
     method:'get',
     onSuccess: function(transport) {
       var text = transport.responseText;
@@ -67,6 +160,8 @@ Edit.requestSource = function() {
   });
 }
 Edit.set_player = function() {
+  if (Edit.SKIP_GAME)
+    return;
   var p = Edit.PLAYER + location.hash;
   console.log(p);
   $('quixeframe').src = Edit.PLAYER + location.hash; //#autoincluded
@@ -74,7 +169,7 @@ Edit.set_player = function() {
 Edit.save_and_run = function() {
   try {
     this.save();
-    if (!this.D)
+    if (! Edit.SKIP_GAME)
       this.run();
   } catch(e) {
     alert("Save-error " + e);
@@ -96,14 +191,70 @@ Edit.save = function() {
   s = s.replace(/\u00A0/g," "); //&nbsp;
   //s = s.unescapeHTML();
   s = s.replace(/-- /g,"\t");
-  s = encode_utf8(s);
-  if(this.D) {
-    console.log(s + "\n\n" + s[0] + " " + s.charCodeAt(0));
-    mozillaSaveFile(q, s);
-  } else {
-    mozillaSaveFile(q, s);
-  }
+  var s2 = encode_utf8(s);
+  if(! Edit.SKIP_GAME)
+    mozillaSaveFile(q, s2);
+  this.save_extension(s);
   return false;
+}
+//TODO: save_extension
+Edit.save_extension = function(s) {
+  l = s.split('\n');
+  //console.log(s);
+  var o = "";
+  var ext = null;
+  for(var i = 0; i < l.length; i++) {
+    var s = l[i];
+    var r;
+    if (r =/\"(.*)\" by \"(.*)\" \[begins here\]./.exec(s)) {
+      console.log(r);
+      o += (r[1] + ' by ' + r[2] + ' begins here.');
+      ext = r;
+    } else if (r = /\[(.* ends here.)\]/.exec(s)) {
+      console.log(s);
+      o += (r[1] + '\n\n---- DOCUMENTATION ----');
+    } else
+      o += (s);
+    o += ("\n");
+  }
+  //console.log("-->\n" + o);
+  console.log(ext);
+  if(ext) {
+    var name = ext[1] + " by " + ext[2] + ".i7x";
+    var file = "Extensions/" + name;
+    file = file.replace(/ /g,"_");
+    var file = /.*\//.exec(document.location)[0] + file;
+    console.log(file);
+    file = getLocalPath(file);
+    console.log("saving ext " + file);
+    var s2 = encode_utf8(o);
+    //if(! Edit.SKIP_GAME)
+    mozillaSaveFile(file, s2);
+
+    Edit.EXT_INSTALLER = Edit.DIR + 'edit-i7-lib/edit_install_extension.py';
+
+    var args = [
+    '-e', getLocalPath(Edit.EXT_INSTALLER),
+    ext[1],ext[2],file
+    ];
+    console.log(JSON.stringify(args));
+
+    netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+
+    // create an nsILocalFile for the executable
+    var file = Components.classes["@mozilla.org/file/local;1"]
+    .createInstance(Components.interfaces.nsILocalFile);
+    file.initWithPath(Edit.XTERM);
+
+    // create an nsIProcess
+    var process = Components.classes["@mozilla.org/process/util;1"]
+    .createInstance(Components.interfaces.nsIProcess);
+    process.init(file);
+
+    var me = this;
+    process.runAsync(args, args.length);
+  }
+
 }
 Edit.run = function() {
 
@@ -219,12 +370,10 @@ function convertUriToUTF8(uri,charSet) {
 }
 
 //http://ecmanaut.blogspot.com/2006/07/encoding-decoding-utf8-in-javascript.html
-function encode_utf8( s )
-{
+function encode_utf8( s ) {
   return unescape( encodeURIComponent( s ) );
 }
 
-function decode_utf8( s )
-{
+function decode_utf8( s ) {
   return decodeURIComponent( escape( s ) );
 }

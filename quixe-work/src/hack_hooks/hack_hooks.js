@@ -51,8 +51,10 @@ HackHooks = {
     console.log("print> " + line);
     var ce = $('window' + this.main_winid).childElements();
     var last = ce[ce.length-1];
-    last.insert({"before": '<div class="BufferLine">' + line.escapeHTML()
-      + '</div>'});
+    last.insert({
+      "before": '<div class="BufferLine">' + line.escapeHTML()
+      + '</div>'
+    });
   },
   set_quixe_options: function(quixe_options) {
     this.quixe_options = quixe_options;
@@ -116,7 +118,9 @@ HackHooks = {
     if(! this.AJAX)
       this.finish_started(null);
     else
-      this.index_history("HackHooks.finish_started",{read: true});
+      this.index_history("HackHooks.finish_started", {
+        read: true
+      });
 
   },
   load_hash: function() {
@@ -172,7 +176,9 @@ HackHooks = {
     if( ! this.replaying) {
       this.set_url_hash();
       this.update_title();
-      this.index_history("HackHooks.finish_got_line",{write: true});
+      this.index_history("HackHooks.finish_got_line", {
+        write: true
+      });
       this.finish_got_line = function(json) {
         this.base_md5 = json.base_log_md5;
         this.base_len = json.log_len;
@@ -182,7 +188,9 @@ HackHooks = {
     var me = this;
     var ce = $('window' + me.main_winid).childElements();
     var last = ce[ce.length-1];
-    last.insert({"before": '<hr>'});
+    last.insert({
+      "before": '<hr>'
+    });
   },
   do_history: function() {
     this.log = [];
@@ -197,6 +205,7 @@ HackHooks = {
     this.update_title();
   },
   hash_change: function() {
+    console.log("player.hash_change");
     var changed = this.hash !== location.hash;
     if(changed) {
       if(true || confirm("url-skein has changed, reload?"))
@@ -207,7 +216,8 @@ HackHooks = {
   set_url_hash: function() {
     //TODO .clone().splice() stupid but works for now
     var json = JSON.stringify({
-      log: this.log.clone().splice(this.base_len), base_md5: this.base_md5
+      log: this.log.clone().splice(this.base_len),
+      base_md5: this.base_md5
     });
     var hash = Base64.encode(json);
     location.hash = hash;
@@ -239,7 +249,7 @@ HackHooks = {
     return res;
   },
   insert_special_text: function(el, val) {
-    console.log("insert_text>" + val);
+    //console.log("insert_text>" + val);
     var url;
     if(url = /^(.*?.). Url: (.*)$/.exec(val)) {
       if (! /^\/|.*:.*/.exec(url[2]) )
@@ -323,6 +333,14 @@ HackHooks = {
         el.appendChild(fel);
       }
       return true;
+    } else if ((url = /^\/edit .*\{(.*)\}.$/.exec(val))) {
+        this.print(val);
+      if(this.replaying) {
+        //pass
+      } else {
+        this.post_parent(["edit",url[1]]);
+      }
+      return true;
     } else {
       var match = -1;
       var rx = /(.*?)(\w\+)?(\w*)\{(.*?)\}(.*?)/g
@@ -351,7 +369,7 @@ HackHooks = {
       if(match != -1)
         el.appendChild(new Element('span').update(val.substr(match).escapeHTML()));
       else
-        el.appendChild(new Element('span').update(val.escapeHTML()));      
+        el.appendChild(new Element('span').update(val.escapeHTML()));
       return true;
     }
     return false;

@@ -11,6 +11,9 @@
     body {
       background: #FFFFEE;
     }
+    #framediv {
+      height:90%
+    }
     #editdiv {
       height:100%;
       float:left;
@@ -32,8 +35,9 @@
     .quixeframe_play {
       width:100%;
     }
-    #framediv {
-      height:90%
+    #docuframe {
+      height:100%;
+      width:100%;
     }
     </style>
 
@@ -63,6 +67,8 @@
         ..Loading..
       </div>
       <iframe id="quixeframe" class="quixeframe_mix" src="" frameborder="0">
+      </iframe>
+      <iframe id="docuframe" src="" frameborder="0" style="display: none;">
       </iframe>
     </div>
     <script>

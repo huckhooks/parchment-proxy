@@ -28,7 +28,7 @@ body {
 
 <script src="edit-config-full.js" type="text/javascript">
 </script>
-<script src="../edit-config-full.js.js" type="text/javascript">
+<script src="../edit-config.js" type="text/javascript">
 </script>
 <script src="../src/hack_hooks/hack_hooks.js" type="text/javascript"></script>
 
@@ -48,12 +48,12 @@ game_options = {
   set_page_title: true
 };
 
-HackHooks.BROWSIE_BASE = "../" + Edit.PROJECT + "_Materials/Browsies/";
+HackHooks.BROWSIE_BASE = "../" + parent.Edit.PROJECT + "_Materials/Browsies/";
 </script>
 
 <script type="text/javascript">
-  var s = '../' + Edit.PROJECT + '_Materials/Release/interpreter/'
-    + Edit.PROJECT + '.gblorb.js';
+  var s = '../' + parent.Edit.PROJECT + '_Materials/Release/interpreter/' 
+  + parent.Edit.PROJECT + '.gblorb.js';
   console.log(s);
   document.write(
     '<script src="' + s + '" type="text/javascript"><' + '/script>'
